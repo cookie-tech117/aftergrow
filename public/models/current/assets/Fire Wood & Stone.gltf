@@ -1,0 +1,197 @@
+{
+  "asset": {
+    "generator": "UnityGltf 2.20.0, Unity 2022.3.62f2c1, Built-in RP",
+    "version": "2.0"
+  },
+  "extensionsUsed": [
+    "KHR_texture_transform"
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ],
+      "name": "Fire Wood & Stone"
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 1370,
+      "type": "VEC3",
+      "max": [
+        0.10502533614635468,
+        0.11890176683664322,
+        0.10149136185646057
+      ],
+      "min": [
+        -0.11929377168416977,
+        -0.036528211086988449,
+        -0.10370949655771255
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 1370,
+      "type": "VEC3",
+      "max": [
+        0.99951112270355225,
+        0.99944716691970825,
+        0.999969482421875
+      ],
+      "min": [
+        -0.99951112270355225,
+        -0.99944716691970825,
+        -0.999969482421875
+      ]
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 1370,
+      "type": "VEC4",
+      "max": [
+        0.98768764734268188,
+        1.0,
+        0.99998342990875244,
+        1.0
+      ],
+      "min": [
+        -0.99969863891601563,
+        -0.99994266033172607,
+        -0.976836621761322,
+        -1.0
+      ]
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 1370,
+      "type": "VEC2",
+      "max": [
+        0.98124325275421143,
+        0.86039245128631592
+      ],
+      "min": [
+        0.26260700821876526,
+        0.013715982437133789
+      ]
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5123,
+      "count": 2100,
+      "type": "SCALAR",
+      "max": [
+        1369.0
+      ],
+      "min": [
+        0.0
+      ]
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "Fire Wood & Stone.bin",
+      "byteLength": 69960
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 16440,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 16440,
+      "byteLength": 16440,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 32880,
+      "byteLength": 21920,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 54800,
+      "byteLength": 10960,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 65760,
+      "byteLength": 4200,
+      "target": 34963
+    }
+  ],
+  "images": [
+    {
+      "uri": "Lowpoly_Flaoting_Islands_PortTexture.jpg",
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ],
+  "materials": [
+    {
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0,
+          "extensions": {
+            "KHR_texture_transform": {
+              "texCoord": 0
+            }
+          }
+        },
+        "metallicFactor": 0.0
+      },
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0
+        }
+      ],
+      "name": "Fire Wood & Stone"
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "scale": [
+        3.3971,
+        3.3971,
+        3.3971
+      ],
+      "name": "Fire Wood & Stone"
+    }
+  ],
+  "samplers": [
+    {
+      "minFilter": 9987
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0,
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ]
+}

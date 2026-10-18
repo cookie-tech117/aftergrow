@@ -1,0 +1,192 @@
+{
+  "asset": {
+    "generator": "UnityGltf 2.20.0, Unity 2022.3.62f2c1, Built-in RP",
+    "version": "2.0"
+  },
+  "extensionsUsed": [
+    "KHR_texture_transform"
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ],
+      "name": "Tant_2"
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 1612,
+      "type": "VEC3",
+      "max": [
+        0.60129302740097046,
+        0.37304618954658508,
+        0.983167827129364
+      ],
+      "min": [
+        -0.73259502649307251,
+        -0.29268637299537659,
+        -1.0836589336395264
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 1612,
+      "type": "VEC3",
+      "max": [
+        0.9929807186126709,
+        0.9999927282333374,
+        0.99514669179916382
+      ],
+      "min": [
+        -0.99807834625244141,
+        -0.99994540214538574,
+        -0.99983549118041992
+      ]
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 1612,
+      "type": "VEC4",
+      "max": [
+        0.993736982345581,
+        0.99943941831588745,
+        0.99452930688858032,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -0.85728490352630615,
+        -0.99432474374771118,
+        -1.0
+      ]
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 1612,
+      "type": "VEC2",
+      "max": [
+        0.72983229160308838,
+        0.916831374168396
+      ],
+      "min": [
+        0.208500936627388,
+        0.10016757249832153
+      ]
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5123,
+      "count": 2676,
+      "type": "SCALAR",
+      "max": [
+        1611.0
+      ],
+      "min": [
+        0.0
+      ]
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "Tant_2.bin",
+      "byteLength": 82728
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 19344,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 19344,
+      "byteLength": 19344,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 38688,
+      "byteLength": 25792,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 64480,
+      "byteLength": 12896,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 77376,
+      "byteLength": 5352,
+      "target": 34963
+    }
+  ],
+  "images": [
+    {
+      "uri": "Lowpoly_Flaoting_Islands_PortTexture.jpg",
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ],
+  "materials": [
+    {
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0,
+          "extensions": {
+            "KHR_texture_transform": {
+              "texCoord": 0
+            }
+          }
+        },
+        "metallicFactor": 0.0
+      },
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0
+        }
+      ],
+      "name": "Tant_2"
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "Tant_2"
+    }
+  ],
+  "samplers": [
+    {
+      "minFilter": 9987
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0,
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ]
+}

@@ -1,0 +1,331 @@
+{
+  "asset": {
+    "generator": "UnityGltf 2.20.0, Unity 2022.3.62f2c1, Built-in RP",
+    "version": "2.0"
+  },
+  "extensionsUsed": [
+    "KHR_texture_transform"
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ],
+      "name": "Base"
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 2196,
+      "type": "VEC3",
+      "max": [
+        6.3112082481384277,
+        0.49172446131706238,
+        6.19297456741333
+      ],
+      "min": [
+        -5.6853513717651367,
+        -5.30713415145874,
+        -6.0382671356201172
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 2196,
+      "type": "VEC3",
+      "max": [
+        0.99968934059143066,
+        0.99997997283935547,
+        0.9998629093170166
+      ],
+      "min": [
+        -0.99986827373504639,
+        -0.9998551607131958,
+        -0.9997517466545105
+      ]
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 2196,
+      "type": "VEC4",
+      "max": [
+        0.99090754985809326,
+        0.99999320507049561,
+        0.99802398681640625,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -0.99784541130065918,
+        -1.0
+      ]
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 2196,
+      "type": "VEC2",
+      "max": [
+        0.97070121765136719,
+        0.79288321733474731
+      ],
+      "min": [
+        0.13797704875469208,
+        0.074104547500610352
+      ]
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5123,
+      "count": 3468,
+      "type": "SCALAR",
+      "max": [
+        2195.0
+      ],
+      "min": [
+        0.0
+      ]
+    },
+    {
+      "bufferView": 5,
+      "componentType": 5126,
+      "count": 265,
+      "type": "VEC3",
+      "max": [
+        1.7161856889724731,
+        0.069871649146080017,
+        1.7237551212310791
+      ],
+      "min": [
+        -1.6068816184997559,
+        -0.093797408044338226,
+        -1.5115220546722412
+      ]
+    },
+    {
+      "bufferView": 6,
+      "componentType": 5126,
+      "count": 265,
+      "type": "VEC3",
+      "max": [
+        0.98328465223312378,
+        0.99998211860656738,
+        0.99778878688812256
+      ],
+      "min": [
+        -0.99348950386047363,
+        -0.99998211860656738,
+        -0.96082109212875366
+      ]
+    },
+    {
+      "bufferView": 7,
+      "componentType": 5126,
+      "count": 265,
+      "type": "VEC4",
+      "max": [
+        0.999974250793457,
+        1.0,
+        0.61616027355194092,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -0.84982746839523315,
+        -1.0
+      ]
+    },
+    {
+      "bufferView": 8,
+      "componentType": 5126,
+      "count": 265,
+      "type": "VEC2",
+      "max": [
+        0.42922091484069824,
+        0.924355685710907
+      ],
+      "min": [
+        0.39034122228622437,
+        0.88547611236572266
+      ]
+    },
+    {
+      "bufferView": 9,
+      "componentType": 5123,
+      "count": 420,
+      "type": "SCALAR",
+      "max": [
+        264.0
+      ],
+      "min": [
+        0.0
+      ]
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "Base.bin",
+      "byteLength": 125904
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 26352,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 26352,
+      "byteLength": 26352,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 52704,
+      "byteLength": 35136,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 87840,
+      "byteLength": 17568,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 105408,
+      "byteLength": 6936,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 112344,
+      "byteLength": 3180,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 115524,
+      "byteLength": 3180,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 118704,
+      "byteLength": 4240,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 122944,
+      "byteLength": 2120,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 125064,
+      "byteLength": 840,
+      "target": 34963
+    }
+  ],
+  "images": [
+    {
+      "uri": "Lowpoly_Flaoting_Islands_PortTexture.jpg",
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ],
+  "materials": [
+    {
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0,
+          "extensions": {
+            "KHR_texture_transform": {
+              "texCoord": 0
+            }
+          }
+        },
+        "metallicFactor": 0.0
+      },
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0
+        }
+      ],
+      "name": "Floting Base_1"
+    },
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 5,
+            "NORMAL": 6,
+            "TANGENT": 7,
+            "TEXCOORD_0": 8
+          },
+          "indices": 9,
+          "material": 0
+        }
+      ],
+      "name": "Floting Base_2"
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1,
+        2
+      ],
+      "name": "Base"
+    },
+    {
+      "mesh": 0,
+      "name": "Floting Base_1"
+    },
+    {
+      "mesh": 1,
+      "translation": [
+        1.50954843,
+        0.3028299,
+        -1.44302249
+      ],
+      "name": "Floting Base_2"
+    }
+  ],
+  "samplers": [
+    {
+      "minFilter": 9987
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0,
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ]
+}

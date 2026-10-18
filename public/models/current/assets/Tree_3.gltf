@@ -1,0 +1,192 @@
+{
+  "asset": {
+    "generator": "UnityGltf 2.20.0, Unity 2022.3.62f2c1, Built-in RP",
+    "version": "2.0"
+  },
+  "extensionsUsed": [
+    "KHR_texture_transform"
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ],
+      "name": "Tree_3"
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 180,
+      "type": "VEC3",
+      "max": [
+        0.33597725629806519,
+        2.162973165512085,
+        0.25150030851364136
+      ],
+      "min": [
+        -0.20279347896575928,
+        -0.00087678863201290369,
+        -0.2813057005405426
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 180,
+      "type": "VEC3",
+      "max": [
+        0.99944800138473511,
+        0.98312091827392578,
+        0.99830412864685059
+      ],
+      "min": [
+        -0.99968624114990234,
+        -1.0,
+        -0.99997270107269287
+      ]
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 180,
+      "type": "VEC4",
+      "max": [
+        1.0,
+        0.97307217121124268,
+        0.98613828420639038,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -0.92968815565109253,
+        -0.99996519088745117,
+        1.0
+      ]
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 180,
+      "type": "VEC2",
+      "max": [
+        0.9179413914680481,
+        0.978608250617981
+      ],
+      "min": [
+        0.38888108730316162,
+        0.26373922824859619
+      ]
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5121,
+      "count": 240,
+      "type": "SCALAR",
+      "max": [
+        179.0
+      ],
+      "min": [
+        0.0
+      ]
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "Tree_3.bin",
+      "byteLength": 8880
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 2160,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 2160,
+      "byteLength": 2160,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 4320,
+      "byteLength": 2880,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 7200,
+      "byteLength": 1440,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 8640,
+      "byteLength": 240,
+      "target": 34963
+    }
+  ],
+  "images": [
+    {
+      "uri": "Lowpoly_Flaoting_Islands_PortTexture.jpg",
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ],
+  "materials": [
+    {
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0,
+          "extensions": {
+            "KHR_texture_transform": {
+              "texCoord": 0
+            }
+          }
+        },
+        "metallicFactor": 0.0
+      },
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0
+        }
+      ],
+      "name": "Tree_3"
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "Tree_3"
+    }
+  ],
+  "samplers": [
+    {
+      "minFilter": 9987
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0,
+      "name": "Lowpoly_Flaoting_Islands_PortTexture"
+    }
+  ]
+}
