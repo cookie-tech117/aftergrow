@@ -25,9 +25,9 @@ test('home retains the existing live island and saved weather integration', asyn
   const page = await readFile(new URL('../app/page.tsx', import.meta.url), 'utf8');
   const dashboard = await readFile(new URL('../app/home/HomeDashboard.tsx', import.meta.url), 'utf8');
   assert.match(page, /<BaseIslandPreviewScene items=\{baseDecorations\}/);
-  assert.match(page, /onDecorate=\{\(\) => setTab\("island"\)\}/);
+  assert.match(page, /onDecorate=\{\(\) => openIsland\("home"\)\}/);
   assert.match(page, /onWeather=\{\(\) => setWeather\(\(current\) => nextWeather\(current\)\)\}/);
-  assert.match(page, /const save: SaveData = \{ inventory, placedItems, sessions, weather, island \}/);
+  assert.match(page, /const save: SaveData = \{ inventory, placedItems, sessions, weather, island, dailyGoals:/);
   assert.match(dashboard, /role="progressbar"/);
   assert.match(dashboard, /aria-live="polite"/);
   assert.match(dashboard, /onClick=\{onDecorate\}/);

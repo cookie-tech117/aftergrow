@@ -9,6 +9,7 @@ import * as THREE from "three";
 import Onboarding from "./onboarding/Onboarding";
 import { starterPlan } from "./onboarding/flow";
 import HomeDashboard from "./home/HomeDashboard";
+import GroupHub from "./group/GroupHub";
 import HomeWeatherLighting from "./home/HomeWeatherLighting";
 import { nextWeather } from "./home/weather";
 import IslandAssetEditor, {
@@ -74,6 +75,7 @@ type SaveData = {
   sessions: SessionRecord[];
   weather: WeatherId;
   island: IslandId;
+  dailyGoals?: { date: string; completed: string[] };
 };
 
 const HOME_PARTICLES = [
@@ -925,7 +927,7 @@ function RecoverySession({
               <div className="result-lin"><LinAvatar mood="happy" /></div>
               <h1>I’m glad you shared that, Cookie.</h1>
               <p>Your island feels a little brighter. A soft light has appeared along the shore.</p>
-              <div className="exp-earned"><span>☺</span>You earned <strong>+5 EXP</strong></div>
+              <div className="exp-earned"><span>☺</span>You earned <strong>+{RECOVERY_EXP[goal.id] ?? 5} EXP</strong></div>
               <button type="button" onClick={onComplete}>Continue</button>
             </>
           )}
@@ -965,6 +967,8 @@ function RecoverySession({
 
 export default function Home() {
   const [tab, setTab] = useState<TabId>("home");
+  const [islandReturnTab, setIslandReturnTab] = useState<"home" | "group">("home");
+  const [recoveryReturnTab, setRecoveryReturnTab] = useState<"home" | "group">("home");
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
   const [homeTourStep, setHomeTourStep] = useState(-1);
   const [inventory, setInventory] = useState<Inventory>(EMPTY_INVENTORY);
@@ -1013,6 +1017,9 @@ export default function Home() {
       const saved = window.localStorage.getItem(SAVE_KEY);
       if (saved) {
         const data = JSON.parse(saved) as Partial<SaveData>;
+        if (data.dailyGoals?.date === new Date().toDateString() && Array.isArray(data.dailyGoals.completed)) {
+          setCompletedGoals(data.dailyGoals.completed.filter((id) => typeof id === "string" && id in RECOVERY_EXP));
+        }
         if (data.inventory) setInventory({ ...EMPTY_INVENTORY, ...data.inventory });
         if (Array.isArray(data.placedItems)) {
           setPlacedItems(data.placedItems
@@ -1061,9 +1068,9 @@ export default function Home() {
 
   useEffect(() => {
     if (!hydrated) return;
-    const save: SaveData = { inventory, placedItems, sessions, weather, island };
+    const save: SaveData = { inventory, placedItems, sessions, weather, island, dailyGoals: { date: new Date().toDateString(), completed: completedGoals } };
     window.localStorage.setItem(SAVE_KEY, JSON.stringify(save));
-  }, [hydrated, inventory, placedItems, sessions, weather, island]);
+  }, [hydrated, inventory, placedItems, sessions, weather, island, completedGoals]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -1115,17 +1122,24 @@ export default function Home() {
   };
 
   const openTalk = () => {
+    setRecoveryReturnTab("home");
     if (chatStage === 4) resetChat();
     setActiveRecoveryGoal(null);
     setRecoveryStage("ready");
     setTab("talk");
   };
 
-  const startRecoveryGoal = (id: string, label: string) => {
+  const openIsland = (from: "home" | "group") => {
+    setIslandReturnTab(from);
+    setTab("island");
+  };
+
+  const startRecoveryGoal = (id: string, label: string, from: "home" | "group" = "home") => {
+    setRecoveryReturnTab(from);
     setActiveRecoveryGoal({ id, label });
     setRecoveryStage("intro");
     setGoalSheetOpen(false);
-    setTab("home");
+    setTab(from);
   };
 
   const completeRecoveryGoal = () => {
@@ -1148,7 +1162,7 @@ export default function Home() {
     setRewardOpen(true);
     setRecoveryStage("ready");
     setActiveRecoveryGoal(null);
-    setTab("home");
+    setTab(recoveryReturnTab);
   };
 
   const chooseMood = (mood: string) => {
@@ -1230,6 +1244,7 @@ export default function Home() {
   };
 
   const goDecorateReward = () => {
+    setIslandReturnTab(recoveryReturnTab);
     setRewardOpen(false);
     setSelectedReward(lastReward);
     setSelectedPlaced(null);
@@ -1313,10 +1328,10 @@ export default function Home() {
             goals={homeGoals}
             completed={completedGoals}
             onWeather={() => setWeather((current) => nextWeather(current))}
-            onDecorate={() => setTab("island")}
+            onDecorate={() => openIsland("home")}
             onTalk={openTalk}
             onGoal={startRecoveryGoal}
-            onAddGoal={() => setGoalSheetOpen(true)}
+            onAddGoal={() => { setRecoveryReturnTab("home"); setGoalSheetOpen(true); }}
             scene={<Canvas orthographic camera={{ position: [8, 8.5, 8], zoom: 39, near: 0.1, far: 100 }} dpr={[1, 1.45]} gl={{ antialias: true, alpha: true }}>
               <BaseIslandPreviewScene items={baseDecorations} offsetY={-1.18} animated atmosphere shadowOpacity={0.15} />
               <HomeWeatherLighting weather={weather} />
@@ -1333,7 +1348,7 @@ export default function Home() {
             onClose={() => {
               setRecoveryStage("ready");
               setActiveRecoveryGoal(null);
-              setTab("home");
+              setTab(recoveryReturnTab);
             }}
           />
         )}
@@ -1412,38 +1427,29 @@ export default function Home() {
         )}
 
         {tab === "group" && (
-          <div className="screen simple-section-screen">
-            <div className="simple-scroll">
-              <AppHeader eyebrow="RECOVER TOGETHER" title="Recovery Groups" />
-              <section className="group-hero">
-                <span><LinAvatar mood="wave" /></span>
-                <div><small>LIN’S NOTE FOR TODAY</small><h2>No need to compare pace. We can move forward together.</h2><p>Join a gentle group and share one small step you completed today.</p></div>
-              </section>
-              <div className="simple-heading"><h2>Recommended for You</h2><span>See All</span></div>
-              {[
-                ["Slow Morning Recovery", "128 members", "Take one breathing pause together today"],
-                ["Soft Moments After Movement", "86 members", "Notice small changes as your body recovers"],
-                ["Wind-Down Island", "215 members", "Set today down gently before sleep"],
-              ].map(([name, people, note], index) => (
-                <button className="group-card" type="button" key={name}>
-                  <i>{["☀", "≈", "☾"][index]}</i>
-                  <span><strong>{name}</strong><small>{people}</small><p>{note}</p></span>
-                  <b>Join</b>
-                </button>
-              ))}
-            </div>
-          </div>
+          <GroupHub
+            name={personalization.displayName.trim() || "Cookie"}
+            totalExp={totalHomeExp}
+            goals={homeGoals}
+            completed={completedGoals}
+            onDecorate={() => openIsland("group")}
+            onGoal={(id, label) => startRecoveryGoal(id, label, "group")}
+            scene={<Canvas orthographic camera={{ position: [8, 8.5, 8], zoom: 39, near: 0.1, far: 100 }} dpr={[1, 1.45]} gl={{ antialias: true, alpha: true }}>
+              <BaseIslandPreviewScene items={baseDecorations} offsetY={-1.18} animated atmosphere shadowOpacity={0.15} />
+              <HomeWeatherLighting weather={weather} />
+            </Canvas>}
+          />
         )}
 
         {tab === "island" && (
           <div className="screen island-screen base-editor-app-screen">
             <div className="island-toolbar base-editor-app-toolbar">
-              <button className="island-back" type="button" onClick={() => setTab("home")}>‹</button>
+              <button className="island-back" type="button" onClick={() => setTab(islandReturnTab)}>‹</button>
               <div>
                 <small>BASE ISLAND · FREE PLACEMENT</small>
                 <h1>Island Studio</h1>
               </div>
-              <button type="button" onClick={() => setTab("home")}>Done</button>
+              <button type="button" onClick={() => setTab(islandReturnTab)}>Done</button>
             </div>
             <div className="base-editor-app-body">
               <IslandAssetEditor embedded onChange={setBaseDecorations} />
@@ -1559,7 +1565,7 @@ export default function Home() {
                   ["music", "♫", "Music"], ["focus", "◎", "Focus"], ["journal", "▣", "Journal"],
                   ["water", "♧", "Hydrate"], ["walk", "♟", "Walk"], ["custom", "＋", "Custom"],
                 ].map(([id, icon, label]) => (
-                  <button key={id} type="button" onClick={() => startRecoveryGoal(id, label)}>
+                  <button key={id} type="button" onClick={() => startRecoveryGoal(id, label, recoveryReturnTab)}>
                     <i>{icon}</i><span>{label}</span>
                   </button>
                 ))}
@@ -1581,13 +1587,13 @@ export default function Home() {
             onSkip={() => {
               setActiveRecoveryGoal(null);
               setRecoveryStage("ready");
-              setTab("home");
+              setTab(recoveryReturnTab);
             }}
             onChooseAnother={() => {
               setActiveRecoveryGoal(null);
               setRecoveryStage("ready");
               setGoalSheetOpen(true);
-              setTab("home");
+              setTab(recoveryReturnTab);
             }}
           />
         )}

@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import test from 'node:test';
+import ts from 'typescript';
+const source = await readFile(new URL('../app/group/model.ts',import.meta.url),'utf8');
+const compiled=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
+const { DEMO_SQUADS, emptySquadState, findInvite, readSquadState, recoveryPoints }=await import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`);
+test('invalid saved squad data falls back safely',()=>{assert.deepEqual(readSquadState('{bad'),emptySquadState());assert.deepEqual(readSquadState('null'),emptySquadState());});
+test('invite lookup normalizes codes and rejects unknown codes',()=>{assert.equal(findInvite(DEMO_SQUADS,'warm-light').id,'warm-light');assert.equal(findInvite(DEMO_SQUADS,'missing'),undefined);});
+test('memberships and reactions survive save/load without duplicate memberships',()=>{const state={...emptySquadState(),joined:['mountain','mountain','invalid'],selected:'mountain',reactions:['cheer-mia']};const loaded=readSquadState(JSON.stringify(state));assert.deepEqual(loaded.joined,['mountain']);assert.equal(loaded.selected,'mountain');assert.deepEqual(loaded.reactions,['cheer-mia']);});
+test('private custom squads and local moments survive reload',()=>{const item={...DEMO_SQUADS[0],id:'my-squad',name:'Quiet Trail',visibility:'Private',code:'QUIET'};const state={...emptySquadState(),squads:[item],joined:[item.id],selected:item.id,moments:[{id:'m1',note:'A quieter morning',date:'2026-10-19T00:00:00Z'}]};assert.deepEqual(readSquadState(JSON.stringify(state)),state);});
+test('team points reflect recovery without exceeding the target',()=>{assert.equal(recoveryPoints(DEMO_SQUADS[0],8),658);assert.equal(recoveryPoints(DEMO_SQUADS[0],1000),1000);});
+test('Group and Home share the live island and editor callbacks',async()=>{const page=await readFile(new URL('../app/page.tsx',import.meta.url),'utf8');assert.match(page,/onDecorate=\{\(\) => openIsland\("group"\)\}/);assert.match(page,/startRecoveryGoal\(id, label, "group"\)/);assert.match(page,/setTab\(islandReturnTab\)/);assert.match(page,/setTab\(recoveryReturnTab\)/);assert.equal((page.match(/<BaseIslandPreviewScene items=\{baseDecorations\}/g)||[]).length,2);});
