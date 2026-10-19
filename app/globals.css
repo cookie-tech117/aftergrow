@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: "SF Pro Text";
-  src: url("../fonts/SF-Pro-Text-Regular.woff2") format("woff2");
+  src: url("../public/fonts/SF-Pro-Text-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -10,7 +10,7 @@
 
 @font-face {
   font-family: "SF Pro Text";
-  src: url("../fonts/SF-Pro-Text-Medium.woff2") format("woff2");
+  src: url("../public/fonts/SF-Pro-Text-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -18,7 +18,7 @@
 
 @font-face {
   font-family: "SF Pro Text";
-  src: url("../fonts/SF-Pro-Text-Semibold.woff2") format("woff2");
+  src: url("../public/fonts/SF-Pro-Text-Semibold.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -26,7 +26,7 @@
 
 @font-face {
   font-family: "SF Pro Display";
-  src: url("../fonts/SF-Pro-Display-Semibold.woff2") format("woff2");
+  src: url("../public/fonts/SF-Pro-Display-Semibold.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -34,7 +34,7 @@
 
 @font-face {
   font-family: "SF Pro Display";
-  src: url("../fonts/SF-Pro-Display-Bold.woff2") format("woff2");
+  src: url("../public/fonts/SF-Pro-Display-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -91,7 +91,7 @@ button {
   width: 100vw;
   height: 100dvh;
   place-items: center;
-  overflow: hidden;
+  overflow: clip;
   background:
     radial-gradient(circle at 16% 18%, rgba(241, 218, 121, 0.9), transparent 25%),
     radial-gradient(circle at 86% 82%, rgba(221, 145, 105, 0.6), transparent 27%),
@@ -3746,11 +3746,22 @@ button {
    windows so the complete 393 × 852 canvas remains visible without changing
    its phone-like proportions. */
 .phone-app {
+  container-type: inline-size;
   width: min(393px, calc(100vw - 24px), calc(46.13dvh - 11px));
   height: auto;
   aspect-ratio: 393 / 852;
   border: 2px solid rgba(78, 116, 88, 0.24);
   border-radius: 46px;
+}
+
+@media (max-width: 480px) {
+  .app-stage > .phone-app {
+    width: 100vw;
+    height: 100dvh;
+    aspect-ratio: auto;
+    border: 0;
+    border-radius: 0;
+  }
 }
 
 .status-bar {

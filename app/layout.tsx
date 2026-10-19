@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const title = "Heart Island | Recover, unlock, and shape four living islands";
-const description = "A cozy recovery sandbox with four modular tile-built 3D islands, 35 unlockable keepsakes, eight placement spots per island, and live weather.";
+const title = "Afterglow | Your island of healing";
+const description = "Turn every adventure into an island of healing. Meet Lin, find your recovery rhythm, and grow a personal island with gentle daily goals.";
 
 export const dynamic = "force-static";
 

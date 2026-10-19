@@ -6,6 +6,8 @@ import { Canvas, ThreeEvent, useFrame } from "@react-three/fiber";
 import { ContactShadows, OrbitControls, Sparkles, useGLTF } from "@react-three/drei";
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import Onboarding from "./onboarding/Onboarding";
+import { starterPlan } from "./onboarding/flow";
 import IslandAssetEditor, {
   BaseIslandPreviewScene,
   readSavedBaseDecorations,
@@ -168,7 +170,7 @@ const ISLAND_TIMES: Array<{ id: WeatherId; label: string; icon: string }> = [
 ];
 const EMPTY_INVENTORY = Object.fromEntries(REWARD_ORDER.map((id) => [id, 0])) as Inventory;
 const SAVE_KEY = "heart-island-chat-v3";
-const ONBOARDING_KEY = "heart-island-onboarding-v6";
+const ONBOARDING_KEY = "afterglow-onboarding-svg-v1";
 const HOME_TOUR_KEY = "heart-island-home-tour-v1";
 const PERSONALIZATION_KEY = "heart-island-personalization-v1";
 
@@ -183,6 +185,8 @@ const EMPTY_PERSONALIZATION: PersonalizationProfile = {
 };
 
 const PERSONALIZED_HOME_COPY: Record<string, string> = {
+  "Clear and calm": "Your energy feels steady today. Let’s protect that calm with one gentle step.",
+  "Up and down a lot": "Your feelings can move like the weather. Let’s find one small moment of steadiness.",
   "Clear and focused": "Your energy feels steady today. Let’s protect that clarity with one gentle step.",
   "A little stressed": "Your island is holding a quieter space for you today. We can begin with one slow breath.",
   "Emotionally tired": "You do not need to push today. Let’s choose something small and restorative.",
@@ -793,307 +797,6 @@ function AppHeader({
   );
 }
 
-const ONBOARDING_SLIDES = [
-  {
-    title: "Turn recovery into an island",
-    body: "Every activity, feeling, and moment of rest becomes a visible change on your island.",
-    symbol: "◇",
-  },
-  {
-    title: "Understand your rhythm",
-    body: "Notice shifts in energy, physical fatigue, and the quiet moments when things begin to improve.",
-    symbol: "≈",
-  },
-  {
-    title: "Recover with Lin and others",
-    body: "Receive supportive guidance and gentle practices designed for you. You do not have to do it alone.",
-    symbol: "✦",
-  },
-];
-
-const ONBOARDING_QUESTIONS = [
-  {
-    id: "activity" as const,
-    title: "What high-intensity experience are you recovering from?",
-    options: ["Skiing", "Surfing", "Diving", "Hiking", "Cycling", "Competition", "Travel", "Other"],
-  },
-  {
-    id: "postActivity" as const,
-    title: "How do you usually feel after an intense activity?",
-    options: ["Wired and unable to sleep", "Tired and low on energy", "Physically drained", "Worried about performance", "Struggling to restart", "Sore and tense"],
-  },
-  {
-    id: "currentState" as const,
-    title: "Which state feels closest to you today?",
-    options: ["Clear and focused", "A little stressed", "Emotionally tired", "Anxious or overwhelmed", "Calm but unmotivated", "Feeling strong"],
-  },
-  {
-    id: "support" as const,
-    title: "What kind of support would help most right now?",
-    options: ["Emotional comfort", "Saving happy memories", "Quiet physical relaxation", "Understanding my feelings", "A clear recovery plan", "Recovering with others"],
-  },
-  {
-    id: "dailyTime" as const,
-    title: "How much time feels realistic for recovery each day?",
-    options: ["3 minutes", "5 minutes", "10 minutes", "15 minutes", "Flexible day to day"],
-  },
-  {
-    id: "checkInTime" as const,
-    title: "When would you like Lin to gently check in?",
-    options: ["In the morning", "After an activity", "In the evening", "Only when I open the app"],
-  },
-];
-
-function Onboarding({
-  step,
-  setStep,
-  finish,
-  profile,
-  updateProfile,
-}: {
-  step: number;
-  setStep: (step: number) => void;
-  finish: () => void;
-  profile: PersonalizationProfile;
-  updateProfile: (update: Partial<PersonalizationProfile>) => void;
-}) {
-  const [answer, setAnswer] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  useEffect(() => setAnswer(""), [step]);
-
-  if (step === 0) {
-    return (
-      <section className="onboarding onboarding-welcome">
-        <div className="onboarding-live-island">
-          <Canvas orthographic camera={{ position: [7, 7, 7], zoom: 51, near: 0.1, far: 100 }} dpr={[1, 1.35]}>
-            <BaseIslandPreviewScene />
-          </Canvas>
-        </div>
-        <div className="onboarding-brand"><span>HEART ISLAND</span><small>YOUR RECOVERY SPACE</small></div>
-        <div className="welcome-copy">
-          <h1>Welcome to Heart Island</h1>
-          <p>Turn every moment of recovery into an island that grows with you.</p>
-        </div>
-        <div className="onboarding-actions">
-          <button type="button" onClick={() => setStep(14)}>Start My Journey</button>
-          <button type="button" className="secondary" onClick={() => setStep(15)}>I Already Have an Account</button>
-        </div>
-      </section>
-    );
-  }
-
-  if (step === 14) {
-    return (
-      <section className="onboarding onboarding-account account-choice">
-        <div className="account-hero">
-          <button type="button" onClick={() => setStep(0)}>‹</button>
-          <div><LinAvatar mood="wave" /></div>
-        </div>
-        <section className="account-sheet">
-          <h1>Create an account</h1>
-          <p>Save your recovery progress and every memory your island grows.</p>
-          <div className="account-providers account-choice-providers">
-            <button type="button" onClick={() => setStep(1)}>● Continue with Apple</button>
-            <button type="button" onClick={() => setStep(1)}>G Continue with Google</button>
-            <button type="button" onClick={() => setStep(1)}>◉ Continue with WeChat</button>
-            <button type="button" onClick={() => setStep(16)}>✉ Continue with Email</button>
-          </div>
-          <button className="account-login-button" type="button" onClick={() => setStep(15)}>Log In</button>
-          <button className="account-skip-button" type="button" onClick={() => setStep(1)}>Skip for Now</button>
-        </section>
-      </section>
-    );
-  }
-
-  if (step === 15 || step === 16) {
-    const creating = step === 16;
-    return (
-      <section className="onboarding onboarding-account account-form">
-        <div className="account-hero">
-          <button type="button" onClick={() => setStep(14)}>‹</button>
-          <div><LinAvatar mood={creating ? "happy" : "calm"} /></div>
-        </div>
-        <section className="account-sheet">
-          <h1>{creating ? "Sign Up" : "Log In"}</h1>
-          <p>{creating ? "Create your Heart Island account with email." : "Continue your recovery journey."}</p>
-          {creating && (
-            <input
-              aria-label="Display name"
-              placeholder="Name"
-              value={profile.displayName}
-              onChange={(event) => updateProfile({ displayName: event.target.value })}
-            />
-          )}
-          <input aria-label="Email" type="email" placeholder="Email address" value={email} onChange={(event) => setEmail(event.target.value)} />
-          <input aria-label="Password" type="password" placeholder="Password" value={password} onChange={(event) => setPassword(event.target.value)} />
-          <button
-            type="button"
-            disabled={!email.includes("@") || password.length < 4 || (creating && !profile.displayName.trim())}
-            onClick={() => setStep(1)}
-          >
-            {creating ? "Sign Up" : "Log In"}
-          </button>
-          <small>
-            {creating ? "Already have an account? " : "New to Heart Island? "}
-            <button type="button" onClick={() => setStep(creating ? 15 : 16)}>{creating ? "Log in" : "Sign up"}</button>
-          </small>
-        </section>
-      </section>
-    );
-  }
-
-  if (step >= 1 && step <= 3) {
-    const slide = ONBOARDING_SLIDES[step - 1];
-    return (
-      <section className="onboarding onboarding-intro">
-        <div className="intro-copy">
-          <h1>{slide.title}</h1>
-          <p>{slide.body}</p>
-          <div className="page-dots">
-            {ONBOARDING_SLIDES.map((_, index) => <i key={index} className={index === step - 1 ? "active" : ""} />)}
-          </div>
-        </div>
-        <div className="intro-art"><span>{slide.symbol}</span><LinAvatar mood={step === 3 ? "happy" : "calm"} /></div>
-        <button className="onboarding-primary" type="button" onClick={() => setStep(step + 1)}>Continue</button>
-      </section>
-    );
-  }
-
-  if (step === 4) {
-    return (
-      <section className="onboarding onboarding-lin">
-        <div className="lin-intro-art"><LinAvatar mood="wave" /></div>
-        <div className="lin-intro-copy">
-          <h1>Hi, I’m Lin!</h1>
-          <p>I’m your recovery companion. Six quick questions will help me shape a gentler plan around your real routine.</p>
-          <button type="button" onClick={() => setStep(5)}>Start with Lin</button>
-          <button type="button" className="secondary" onClick={() => setStep(11)}>Skip for Now</button>
-        </div>
-      </section>
-    );
-  }
-
-  if (step >= 5 && step <= 10) {
-    const index = step - 5;
-    const question = ONBOARDING_QUESTIONS[index];
-    const selectedAnswer = profile[question.id];
-    return (
-      <section className="onboarding onboarding-quiz">
-        <div className="quiz-progress">
-          {["Meet You", "Understand You", "Support You"].map((label, progressIndex) => (
-            <span key={label} className={progressIndex <= Math.floor(index / 2) ? "active" : ""}>
-              <i>{progressIndex + 1}</i><small>{label}</small>
-            </span>
-          ))}
-        </div>
-        <div className="quiz-lin"><LinAvatar mood="calm" /></div>
-        <div className="quiz-sheet">
-          <small className="quiz-count">PERSONALIZATION · {index + 1} OF {ONBOARDING_QUESTIONS.length}</small>
-          <h2>{question.title}</h2>
-          <div className="quiz-options">
-            {question.options.map((option) => (
-              <button
-                key={option}
-                type="button"
-                className={selectedAnswer === option ? "selected" : ""}
-                onClick={() => updateProfile({ [question.id]: option })}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-          <button className="onboarding-primary" type="button" disabled={!selectedAnswer} onClick={() => setStep(step + 1)}>Continue</button>
-        </div>
-      </section>
-    );
-  }
-
-  if (step === 11) {
-    return (
-      <section className="onboarding onboarding-shaping">
-        <div className="shaping-orbit"><span /><LinAvatar mood="happy" /></div>
-        <h1>Lin is shaping your recovery plan...</h1>
-        <p>Balancing your activity, current energy, available time, and preferred support.</p>
-        <button className="onboarding-primary" type="button" onClick={() => setStep(12)}>See My Plan</button>
-      </section>
-    );
-  }
-
-  if (step === 12) {
-    return (
-      <section className="onboarding onboarding-ready">
-        <div className="ready-island">
-          <Canvas orthographic camera={{ position: [7, 7, 7], zoom: 48, near: 0.1, far: 100 }} dpr={[1, 1.35]}>
-            <BaseIslandPreviewScene />
-          </Canvas>
-        </div>
-        <div className="ready-sheet">
-          <small className="ready-kicker">YOUR PERSONAL RECOVERY RHYTHM</small>
-          <h1>Your first island is ready</h1>
-          <p>Lin has shaped a gentle starting plan from the answers you shared.</p>
-          <div className="personal-plan-summary">
-            <span><small>Focus</small><strong>{profile.support || "Gentle recovery"}</strong></span>
-            <span><small>Pace</small><strong>{profile.dailyTime || "Flexible"}</strong></span>
-            <span><small>Check-in</small><strong>{profile.checkInTime || "When you open the app"}</strong></span>
-          </div>
-          <button type="button" onClick={() => setStep(13)}>Enter My Island</button>
-          <button type="button" className="text-button" onClick={finish}>Continue Without a Device</button>
-        </div>
-      </section>
-    );
-  }
-
-  if (step === 13) {
-    return (
-      <section className="onboarding onboarding-watch">
-        <button className="round-back" type="button" onClick={() => setStep(12)}>‹</button>
-        <h1>Connect your smartwatch</h1>
-        <p>Activity and recovery data help Lin understand your body more clearly.</p>
-        <div className="watch-list">
-          {["Apple Watch", "Xiaomi Watch", "HUAWEI WATCH", "WHOOP"].map((watch, index) => (
-            <button key={watch} type="button" className={answer === watch ? "selected" : ""} onClick={() => setAnswer(watch)}>
-              <span>{["◉", "◐", "◇", "▰"][index]}</span>{watch}
-            </button>
-          ))}
-        </div>
-        <div className="watch-actions">
-          <button type="button" disabled={!answer} onClick={() => setStep(17)}>Continue</button>
-          <button type="button" className="secondary" onClick={finish}>Set Up Later</button>
-        </div>
-      </section>
-    );
-  }
-
-  if (step === 17) {
-    return (
-      <section className="onboarding onboarding-watch">
-        <button className="round-back" type="button" onClick={() => setStep(13)}>‹</button>
-        <h1>Allow data access</h1>
-        <p>You can change these permissions anytime in Settings.</p>
-        <div className="permission-list">
-          {["Record workouts", "Read heart rate", "Read sleep", "Read activity duration", "Read active energy"].map((item) => (
-            <label key={item}><span>✓</span>{item}<input type="checkbox" defaultChecked /></label>
-          ))}
-        </div>
-        <div className="watch-actions">
-          <button type="button" onClick={() => setStep(18)}>Continue</button>
-          <button type="button" className="secondary" onClick={finish}>Skip for Now</button>
-        </div>
-      </section>
-    );
-  }
-
-  return (
-    <section className="onboarding onboarding-success">
-      <div className="success-lin"><LinAvatar mood="happy" /></div>
-      <h1>Device connected!</h1>
-      <p>Your activity, heart rate, and rest data will help Lin offer more relevant recovery guidance.</p>
-      <button type="button" onClick={finish}>Continue</button>
-    </section>
-  );
-}
 
 const RECOVERY_GUIDES: Record<string, { icon: string; subtitle: string; instruction: string; duration: string }> = {
   Breathing: { icon: "≋", subtitle: "Let your body slow down", instruction: "Follow the circle. Breathe in slowly, pause, then exhale gently.", duration: "3 min" },
@@ -1298,7 +1001,8 @@ export default function Home() {
           window.localStorage.removeItem(PERSONALIZATION_KEY);
         }
       }
-      setOnboardingStep(window.localStorage.getItem(ONBOARDING_KEY) ? -1 : 0);
+      const replayOnboarding = new URLSearchParams(window.location.search).get("onboarding") === "1";
+      setOnboardingStep(!replayOnboarding && window.localStorage.getItem(ONBOARDING_KEY) ? -1 : 0);
       if (!window.localStorage.getItem(HOME_TOUR_KEY) && window.localStorage.getItem(ONBOARDING_KEY)) {
         setHomeTourStep(0);
       }
@@ -1588,7 +1292,7 @@ export default function Home() {
       <div className="ambient-orb ambient-one" />
       <div className="ambient-orb ambient-two" />
       <section className="phone-app">
-        {tab === "home" && (
+        {tab === "home" && onboardingStep === -1 && (
           <div className={`screen home-screen mood-${weather}`}>
             <div className="recovery-scroll">
               <section className="recovery-greeting">
@@ -1636,15 +1340,9 @@ export default function Home() {
                 </p>
               </section>
 
-              <div className="daily-heading"><h2>Daily Goals</h2><span>{Math.max(0, 5 - completedGoals.length)} goals left today</span></div>
+              <div className="daily-heading"><h2>Daily Goals</h2><span>{starterPlan(personalization).filter((goal) => !completedGoals.includes(goal.id)).length} goals left today</span></div>
               <section className="daily-goals">
-                {[
-                  ["breathing", "≋", "Breathing Practice", "3 min · 5 EXP", "+5", "Breathing"],
-                  ["stretch", "✥", "Neck & Shoulder Release", "5 min · 8 EXP", "+8", "Stretching"],
-                  ["focus", "◎", "Focus for 15 Minutes", "15 min · 10 EXP", "+10", "Focus"],
-                  ["check", "▣", "One-Sentence Check-In", "1 min · 5 EXP", "+5", "Journal"],
-                  ["water", "♧", "Take One Sip", "1 min · 3 EXP", "+3", "Hydrate"],
-                ].map(([id, icon, title, meta, exp, recoveryLabel]) => {
+                {starterPlan(personalization).map(({ id, icon, title, minutes, exp, label: recoveryLabel }) => {
                   const done = completedGoals.includes(id);
                   return (
                     <button
@@ -1653,7 +1351,7 @@ export default function Home() {
                       className={done ? "done" : ""}
                       onClick={() => startRecoveryGoal(id, recoveryLabel)}
                     >
-                      <i>{icon}</i><span><strong>{title}</strong><small>{meta}</small></span><em>{exp}</em><b>{done ? "✓" : ""}</b>
+                      <i>{icon}</i><span><strong>{title}</strong><small>{minutes} min · {exp} EXP</small></span><em>+{exp}</em><b>{done ? "✓" : ""}</b>
                     </button>
                   );
                 })}
@@ -1858,7 +1556,7 @@ export default function Home() {
           </div>
         )}
 
-        {tab === "home" && homeTourStep >= 0 && (
+        {tab === "home" && onboardingStep === -1 && homeTourStep >= 0 && (
           <div className={`home-tour-overlay tour-${homeTourStep}`}>
             <div className="home-tour-lin"><LinAvatar mood={homeTourStep === 2 ? "wave" : "happy"} /></div>
             <section>
