@@ -3776,10 +3776,9 @@ button {
   padding-top: 28px;
 }
 
-/* A taller navigation safe area keeps the supplied artwork away from the
-   rounded bottom edge while preserving the original SVG proportions. */
+/* Compact navigation keeps the supplied SVG unchanged with an 8px safe area. */
 .bottom-nav {
-  height: clamp(78px, 10.1%, 86px);
+  height: 74px;
   aspect-ratio: auto;
   background: #fff;
 }
@@ -3792,7 +3791,7 @@ button {
 }
 
 .bottom-nav-actions {
-  bottom: 18px;
+  bottom: 8px;
 }
 
 .recovery-scroll,
@@ -3803,15 +3802,15 @@ button {
 .talk-screen,
 .island-screen,
 .base-editor-app-screen {
-  padding-bottom: 86px;
+  padding-bottom: 74px;
 }
 
 .base-editor-app-body {
-  bottom: 86px;
+  bottom: 74px;
 }
 
 .inventory-sheet {
-  bottom: 86px;
+  bottom: 74px;
 }
 
 .chat-composer,
