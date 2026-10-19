@@ -3776,11 +3776,13 @@ button {
   padding-top: 28px;
 }
 
-/* Compact navigation keeps the supplied SVG unchanged with an 8px safe area. */
+/* The supplied SVG's upper 16 units are transparent, so Lin rises above the
+   white bar. Match that boundary instead of filling the transparent area. */
 .bottom-nav {
+  --nav-overhang: calc(100cqw * 16 / 394);
   height: 74px;
   aspect-ratio: auto;
-  background: #fff;
+  background: linear-gradient(to bottom, transparent var(--nav-overhang), #fff var(--nav-overhang));
 }
 
 .bottom-nav-artwork {
