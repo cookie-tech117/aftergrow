@@ -10,6 +10,9 @@ import Onboarding from "./onboarding/Onboarding";
 import { starterPlan } from "./onboarding/flow";
 import HomeDashboard from "./home/HomeDashboard";
 import GroupHub from "./group/GroupHub";
+import TalkWithLin from "./wellbeing/TalkWithLin";
+import Diary from "./wellbeing/Diary";
+import type { DiaryView } from "./wellbeing/model";
 import HomeWeatherLighting from "./home/HomeWeatherLighting";
 import { nextWeather } from "./home/weather";
 import IslandAssetEditor, {
@@ -22,6 +25,7 @@ const SITE_BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const siteAsset = (path: string) => `${SITE_BASE_PATH}${path}`;
 
 type TabId = "home" | "group" | "talk" | "island" | "journal" | "profile";
+type RecoveryOrigin = "home" | "group" | "talk" | "journal";
 type IslandId = "beach" | "snow" | "forest" | "meadow";
 type RewardId =
   | "surfboard" | "shell" | "starfish" | "lounger" | "parasol" | "palm" | "tropical_plant" | "bottle"
@@ -55,6 +59,9 @@ type SessionRecord = {
   focus: string;
   reward: RewardId;
   exp?: number;
+  createdAt?: number;
+  goalId?: string;
+  minutes?: number;
 };
 
 type Inventory = Record<RewardId, number>;
@@ -967,8 +974,9 @@ function RecoverySession({
 
 export default function Home() {
   const [tab, setTab] = useState<TabId>("home");
-  const [islandReturnTab, setIslandReturnTab] = useState<"home" | "group">("home");
-  const [recoveryReturnTab, setRecoveryReturnTab] = useState<"home" | "group">("home");
+  const [islandReturnTab, setIslandReturnTab] = useState<RecoveryOrigin>("home");
+  const [recoveryReturnTab, setRecoveryReturnTab] = useState<RecoveryOrigin>("home");
+  const [diaryEntryView, setDiaryEntryView] = useState<DiaryView>("overview");
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
   const [homeTourStep, setHomeTourStep] = useState(-1);
   const [inventory, setInventory] = useState<Inventory>(EMPTY_INVENTORY);
@@ -1134,7 +1142,7 @@ export default function Home() {
     setTab("island");
   };
 
-  const startRecoveryGoal = (id: string, label: string, from: "home" | "group" = "home") => {
+  const startRecoveryGoal = (id: string, label: string, from: RecoveryOrigin = "home") => {
     setRecoveryReturnTab(from);
     setActiveRecoveryGoal({ id, label });
     setRecoveryStage("intro");
@@ -1152,6 +1160,9 @@ export default function Home() {
       focus: "Recovery goal",
       reward,
       exp: RECOVERY_EXP[activeRecoveryGoal.id] ?? 5,
+      createdAt: Date.now(),
+      goalId: activeRecoveryGoal.id,
+      minutes: homeGoals.find((goal) => goal.id === activeRecoveryGoal.id)?.minutes ?? 3,
     };
     setCompletedGoals((current) =>
       current.includes(activeRecoveryGoal.id) ? current : [...current, activeRecoveryGoal.id],
@@ -1339,7 +1350,7 @@ export default function Home() {
           />
         )}
 
-        {tab === "talk" && activeRecoveryGoal && (
+        {tab === "talk" && activeRecoveryGoal && recoveryStage !== "intro" && (
           <RecoverySession
             goal={activeRecoveryGoal}
             stage={recoveryStage}
@@ -1353,77 +1364,11 @@ export default function Home() {
           />
         )}
 
-        {tab === "talk" && !activeRecoveryGoal && (
-          <div className="screen talk-screen">
-            <AppHeader
-              eyebrow="A GENTLE CONVERSATION"
-              title="Talk with Lin"
-              action={<span className="private-chip">Saved on this device</span>}
-            />
-            <div className="chat-scroll">
-              <div className="chat-date">Today · A little space for yourself</div>
-              {messages.map((message) => (
-                <div key={message.id} className={`message-row ${message.role}`}>
-                  {message.role === "lin" && <span className="message-avatar"><LinAvatar mood="calm" /></span>}
-                  <div className="message-bubble">{message.text}</div>
-                </div>
-              ))}
-
-              {chatStage === 0 && (
-                <div className="quick-options">
-                  {Object.keys(MOOD_RESPONSES).map((mood) => (
-                    <button key={mood} type="button" onClick={() => chooseMood(mood)}>{mood}</button>
-                  ))}
-                </div>
-              )}
-
-              {chatStage === 1 && (
-                <div className="quick-options compact-options">
-                  {Object.keys(BODY_RESPONSES).map((focus) => (
-                    <button key={focus} type="button" onClick={() => chooseFocus(focus)}>{focus}</button>
-                  ))}
-                </div>
-              )}
-
-              {chatStage === 2 && (
-                <section className={`breath-card ${isBreathing ? "breathing" : ""}`}>
-                  <div className="breath-orb"><span /></div>
-                  <div>
-                    <small>{isBreathing ? "Follow the circle and breathe slowly" : "A gentle breathing pause"}</small>
-                    <strong>{isBreathing ? "Breathe in · Pause · Breathe out" : "Let your body soften first"}</strong>
-                    <p>{isBreathing ? "You can finish whenever you need" : "About 30 seconds. Comfortable is enough."}</p>
-                  </div>
-                  <button type="button" onClick={startBreathing}>{isBreathing ? "I’m Done" : "Start Breathing"}</button>
-                </section>
-              )}
-
-              {chatStage === 3 && (
-                <button className="complete-session" type="button" onClick={completeSession}>
-                  <span>✦</span>
-                  <div><small>You completed today’s recovery</small><strong>Receive your island keepsake</strong></div>
-                  <i>›</i>
-                </button>
-              )}
-
-              {chatStage === 4 && (
-                <div className="session-finished">
-                  <span>✓</span>
-                  <div><strong>This recovery moment is saved</strong><small>You can begin another conversation anytime</small></div>
-                  <button type="button" onClick={resetChat}>New Conversation</button>
-                </div>
-              )}
-              <div className="chat-safe-note">Lin offers emotional support and self-reflection exercises. It is not a substitute for professional medical or mental health care.</div>
-            </div>
-            <form className="chat-composer" onSubmit={sendMessage}>
-              <input
-                value={draft}
-                onChange={(event) => setDraft(event.target.value)}
-                placeholder="Or share what is on your mind…"
-                aria-label="Message Lin"
-              />
-              <button type="submit" aria-label="Send">↑</button>
-            </form>
-          </div>
+        {tab === "talk" && (!activeRecoveryGoal || recoveryStage === "intro") && (
+          <TalkWithLin name={personalization.displayName.trim() || "Cookie"} sessions={sessions}
+            onClose={() => setTab("home")}
+            onRecovery={(id, label) => startRecoveryGoal(id, label, "talk")}
+            onDiary={(view) => { setDiaryEntryView(view); setTab("journal"); }} />
         )}
 
         {tab === "group" && (
@@ -1458,42 +1403,9 @@ export default function Home() {
         )}
 
         {tab === "journal" && (
-          <div className="screen journal-screen">
-            <div className="scroll-content">
-              <AppHeader eyebrow="YOUR GENTLE FOOTPRINTS" title="Recovery Journal" />
-              <section className="journal-summary">
-                <span><strong>{sessions.length}</strong><small>Sessions</small></span>
-                <span><strong>{collectedCount}</strong><small>Keepsakes</small></span>
-                <span><strong>{Math.min(7, sessions.length)}</strong><small>Day Streak</small></span>
-              </section>
-              <section className="memory-banner">
-                <div className="memory-lin"><LinAvatar mood="happy" /></div>
-                <div><small>A NOTE FROM LIN</small><strong>Nothing you shared has gone to waste.</strong><p>Your words are slowly becoming flowers, light, and places to rest across the island.</p></div>
-              </section>
-              <div className="section-heading journal-heading">
-                <div><small>RECENT MOMENTS</small><h2>Your Latest Check-Ins</h2></div>
-              </div>
-              <div className="session-list">
-                {sessions.length ? (
-                  sessions.map((session) => (
-                    <article key={session.id}>
-                      <span className="session-reward" style={{ "--reward-color": REWARDS[session.reward].color } as React.CSSProperties}>
-                        {REWARDS[session.reward].icon}
-                      </span>
-                      <div><small>{session.date}</small><strong>{session.mood} · Focused on {session.focus}</strong><p>Received “{REWARDS[session.reward].name}”</p></div>
-                    </article>
-                  ))
-                ) : (
-                  <div className="empty-journal">
-                    <span>◌</span>
-                    <strong>Your first entry is waiting</strong>
-                    <p>Complete a recovery session and today’s feelings and keepsake will be saved here.</p>
-                    <button type="button" onClick={openTalk}>Talk with Lin</button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <Diary name={personalization.displayName.trim() || "Cookie"} goals={homeGoals} completed={completedGoals}
+            sessions={sessions} initialView={diaryEntryView}
+            onRecovery={(id, label) => { setDiaryEntryView("tasks"); startRecoveryGoal(id, label, "journal"); }} />
         )}
 
         {tab === "profile" && (
@@ -1628,6 +1540,7 @@ export default function Home() {
           <BottomNav
             tab={tab}
             onChange={(nextTab) => {
+              if (nextTab === "journal") setDiaryEntryView("overview");
               if (nextTab !== "talk") {
                 setActiveRecoveryGoal(null);
                 setRecoveryStage("ready");
