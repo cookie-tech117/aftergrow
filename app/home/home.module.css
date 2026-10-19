@@ -1,0 +1,73 @@
+.root {
+  --u: calc(100cqw / 393);
+  --home-green: #5f7f63;
+  color: #383c38;
+  transition: background .55s ease;
+}
+.root button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.root button:focus-visible { outline: calc(3 * var(--u)) solid #d6a934; outline-offset: calc(3 * var(--u)); }
+.scroll { height: 100%; overflow-y: auto; overscroll-behavior: contain; padding: calc(48 * var(--u)) calc(20 * var(--u)) calc(114 * var(--u)); scrollbar-width: none; }
+.scroll::-webkit-scrollbar { display: none; }
+.greeting { display: grid; grid-template-columns: calc(47 * var(--u)) 1fr; align-items: start; gap: calc(13 * var(--u)); }
+.avatar { display: grid; place-items: center; width: calc(47 * var(--u)); height: calc(47 * var(--u)); padding: calc(3 * var(--u)); border-radius: 50%; border: 2px solid #fff; background: #f5fae8; }
+.avatar img { width: 100%; height: 100%; object-fit: contain; }
+.greetingCard { min-width: 0; border: 1px solid #bdcbb4; border-radius: calc(17 * var(--u)); background: #fff; padding: calc(12 * var(--u)) calc(16 * var(--u)) calc(9 * var(--u)); }
+.greetingCard h1 { margin: 0 0 calc(4 * var(--u)); font-size: calc(13 * var(--u)); line-height: 1.2; font-weight: 650; letter-spacing: -.01em; }
+.greetingCard p { margin: 0; color: #828682; font-size: calc(14 * var(--u)); line-height: 1.42; letter-spacing: .01em; }
+.islandArea { position: relative; height: calc(285 * var(--u)); margin: calc(9 * var(--u)) calc(-20 * var(--u)) 0; }
+.island { position: absolute; inset: calc(8 * var(--u)) 0 calc(34 * var(--u)); display: block; width: 100%; padding: 0; border: 0; background: transparent; isolation: isolate; }
+.island > div:first-child { position: relative; z-index: 1; }
+.weatherButton { position: absolute; z-index: 4; right: calc(22 * var(--u)); top: calc(5 * var(--u)); display: flex; align-items: center; gap: calc(6 * var(--u)); min-height: calc(29 * var(--u)); border: 1px solid #bbccb1; border-radius: 999px; padding: calc(5 * var(--u)) calc(10 * var(--u)); color: #5c795e; background: #fffffff0; font-size: calc(11.5 * var(--u)); font-weight: 550; box-shadow: 0 2px 6px #617d5b0d; }
+.weatherButton > svg { width: calc(16 * var(--u)); height: calc(16 * var(--u)); color: #b9a048; }
+.cycle { font-size: calc(16 * var(--u)); line-height: .8; opacity: .65; }
+.decorate { position: absolute; right: calc(22 * var(--u)); bottom: calc(12 * var(--u)); z-index: 4; display: flex; align-items: center; justify-content: center; gap: calc(12 * var(--u)); min-width: calc(128 * var(--u)); min-height: calc(29 * var(--u)); padding: calc(4 * var(--u)) calc(14 * var(--u)); border: 1px solid #bbccb1; border-radius: 999px; background: #fff; color: var(--home-green); font-size: calc(13 * var(--u)); font-weight: 600; }
+.decorate > span { color: #efc04b; font-size: calc(18 * var(--u)); line-height: .9; }
+.level { border: 1px solid #bbcab2; border-radius: calc(18 * var(--u)); padding: calc(19 * var(--u)) calc(20 * var(--u)) calc(20 * var(--u)); background: #fff; }
+.levelHeading { display: flex; align-items: center; justify-content: space-between; gap: calc(8 * var(--u)); }
+.levelHeading h2 { display: flex; align-items: center; gap: calc(8 * var(--u)); margin: 0; color: var(--home-green); font-size: calc(16 * var(--u)); font-weight: 600; }
+.levelHeading h2 svg { width: calc(17 * var(--u)); height: calc(17 * var(--u)); color: #237743; }
+.levelHeading > span { color: var(--home-green); font-size: calc(12 * var(--u)); font-weight: 600; white-space: nowrap; }
+.progress { height: calc(12 * var(--u)); overflow: hidden; border-radius: 100px; background: #f2f3f5; margin-top: calc(12 * var(--u)); }
+.progress > i { display: block; height: 100%; background: #90bc05; border-radius: inherit; transition: width .5s ease; }
+.level > p { margin: calc(13 * var(--u)) 0 0; text-align: center; color: #858785; font-size: calc(12 * var(--u)); line-height: 1.4; }
+.dailyHeading { display: flex; align-items: center; justify-content: space-between; margin: calc(16 * var(--u)) 0 calc(8 * var(--u)); color: var(--home-green); }
+.dailyHeading h2 { margin: 0; font-size: calc(16 * var(--u)); font-weight: 600; }
+.dailyHeading span { font-size: calc(12 * var(--u)); }
+.goals { display: grid; gap: calc(9 * var(--u)); }
+.goal { display: flex; align-items: center; width: 100%; gap: calc(12 * var(--u)); min-height: calc(68 * var(--u)); padding: calc(11 * var(--u)) calc(16 * var(--u)); text-align: left; background: #fff; border: 1px solid #bbcab2; border-radius: calc(17 * var(--u)); color: #383c38; }
+.goalIcon { flex: none; display: grid; place-items: center; width: calc(40 * var(--u)); height: calc(40 * var(--u)); border-radius: calc(10 * var(--u)); background: #f4f5f7; color: #77b8cd; }
+.goalIcon svg { width: calc(22 * var(--u)); height: calc(22 * var(--u)); }
+.goalIcon[data-kind=stretch] { color: #608766; }
+.goalIcon[data-kind=focus] { color: #ff874b; }
+.goalIcon[data-kind=check] { color: #d6a000; }
+.goalIcon[data-kind=water] { color: #a076fb; }
+.goalText { flex: 1; min-width: 0; }
+.goalText strong { display: block; font-size: calc(14 * var(--u)); font-weight: 600; line-height: 1.25; }
+.goalText small { display: block; color: #858785; font-size: calc(12 * var(--u)); line-height: 1.3; margin-top: calc(4 * var(--u)); }
+.exp { flex: none; width: calc(29 * var(--u)); height: calc(29 * var(--u)); display: grid; place-items: center; border-radius: 50%; font-size: calc(13 * var(--u)); font-weight: 500; background: #f3f4f6; }
+.check { flex: none; display: grid; place-items: center; width: calc(32 * var(--u)); height: calc(32 * var(--u)); border: calc(2 * var(--u)) solid #d1d7e1; border-radius: 50%; color: #fff; }
+.check svg { width: 68%; height: 68%; }
+.done .check { background: var(--home-green); border-color: var(--home-green); }
+.done .goalText strong { text-decoration: line-through; text-decoration-thickness: 1px; }
+.done .goalIcon { color: #9ea8b6; background: #e8ebef; }
+.done .exp { background: #eff5ef; }
+.addGoal { min-height: calc(61 * var(--u)); margin-top: calc(8 * var(--u)); border: 1px solid #bbcab2; border-radius: calc(17 * var(--u)); background: #fff; color: var(--home-green); font-size: calc(15 * var(--u)); font-weight: 600; }
+.addGoal > span { display: inline-block; margin-right: calc(6 * var(--u)); color: #247e43; font-size: calc(21 * var(--u)); vertical-align: -1px; }
+.motes, .precipitation, .fog { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
+.motes i { position: absolute; left: calc(8% + mod(var(--i) * 29, 84) * 1%); top: calc(13% + mod(var(--i) * 17, 78) * 1%); width: calc(3 * var(--u)); height: calc(3 * var(--u)); border-radius: 50%; background: var(--weather-particle); opacity: .55; box-shadow: 0 0 calc(5 * var(--u)) var(--weather-particle); animation: floatLight calc(4s + mod(var(--i), 4) * 1s) ease-in-out calc(var(--i) * -.7s) infinite; }
+.motes i:nth-child(4n) { width: calc(1.2 * var(--u)); height: calc(10 * var(--u)); }
+.motes i:nth-child(4n)::after { content: ''; position: absolute; top: 45%; left: calc(-4 * var(--u)); width: calc(9 * var(--u)); height: calc(1.2 * var(--u)); background: inherit; }
+.precipitation i { position: absolute; left: calc(mod(var(--i) * 37, 101) * 1%); top: -20%; animation-delay: calc(var(--i) * -.19s); animation-timing-function: linear; animation-iteration-count: infinite; }
+.rain i { width: 1px; height: calc(17 * var(--u)); background: linear-gradient(transparent,#d7efffbb); animation-name: rainFall; animation-duration: calc(.8s + mod(var(--i), 3) * .18s); }
+.snow i { width: calc(3 * var(--u) + mod(var(--i), 3) * 1px); height: calc(3 * var(--u) + mod(var(--i), 3) * 1px); border-radius: 50%; background: #fffffff0; animation-name: snowFall; animation-duration: calc(4.5s + mod(var(--i), 4) * 1.4s); }
+.fog i { position: absolute; left: -20%; top: 26%; width: 130%; height: 30%; background: radial-gradient(ellipse,#f1f5eacc,transparent 70%); opacity: .28; animation: fogDrift 12s ease-in-out infinite alternate; }
+.fog i:nth-child(2) { top: 58%; animation-delay: -5s; opacity: .4; }
+.fog i:nth-child(3) { top: 8%; animation-delay: -8s; opacity: .2; }
+.root[data-weather=rain] .motes { opacity: .3; }
+.root[data-weather=night] .dailyHeading { color: #eef6e9; }
+@keyframes floatLight { 0%,100% { opacity: .18; transform: translateY(5px) scale(.8); } 50% { opacity: .8; transform: translateY(-6px) scale(1.1); } }
+@keyframes rainFall { to { transform: translate(-28px, 350px); opacity: .4; } }
+@keyframes snowFall { 50% { margin-left: 12px; } to { transform: translate(9px, 350px); opacity: .5; } }
+@keyframes fogDrift { to { transform: translateX(12%); } }
+@media (max-width:480px) { .scroll { padding-top: max(calc(40 * var(--u)), env(safe-area-inset-top)); } }
+@media (prefers-reduced-motion: reduce) { .root *, .root *::before, .root *::after { animation: none !important; transition: none !important; } .precipitation { display:none; } }

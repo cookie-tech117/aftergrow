@@ -8,6 +8,9 @@ import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "re
 import * as THREE from "three";
 import Onboarding from "./onboarding/Onboarding";
 import { starterPlan } from "./onboarding/flow";
+import HomeDashboard from "./home/HomeDashboard";
+import HomeWeatherLighting from "./home/HomeWeatherLighting";
+import { nextWeather } from "./home/weather";
 import IslandAssetEditor, {
   BaseIslandPreviewScene,
   readSavedBaseDecorations,
@@ -50,6 +53,7 @@ type SessionRecord = {
   mood: string;
   focus: string;
   reward: RewardId;
+  exp?: number;
 };
 
 type Inventory = Record<RewardId, number>;
@@ -1080,6 +1084,13 @@ export default function Home() {
   );
 
   const islandSessionCount = sessions.filter((session) => REWARDS[session.reward]?.island === island).length;
+  const homeGoals = useMemo(() => {
+    const plan = starterPlan(personalization);
+    if (!plan.some((goal) => goal.id === "focus")) plan.splice(2, 0, { id: "focus", title: "Focus for 15 min", icon: "◎", label: "Focus", minutes: 15, exp: 10, note: "begin with one small intention" });
+    else plan.splice(2, 0, { id: "stretch", title: "Neck & Shoulder Release", icon: "✥", label: "Stretching", minutes: 5, exp: 8, note: "reduce body tension" });
+    return plan.map((goal) => goal.id === "breathing" ? { ...goal, title: "Breathing" } : goal);
+  }, [personalization]);
+  const totalHomeExp = sessions.reduce((sum, session) => sum + (Number.isFinite(session.exp) && session.exp! >= 0 ? session.exp! : 5), 0);
   const nextReward = REWARDS_BY_ISLAND[island][islandSessionCount % REWARDS_BY_ISLAND[island].length];
   const placedCounts = useMemo(() => {
     return REWARD_ORDER.reduce(
@@ -1126,6 +1137,7 @@ export default function Home() {
       mood: activeRecoveryGoal.label,
       focus: "Recovery goal",
       reward,
+      exp: RECOVERY_EXP[activeRecoveryGoal.id] ?? 5,
     };
     setCompletedGoals((current) =>
       current.includes(activeRecoveryGoal.id) ? current : [...current, activeRecoveryGoal.id],
@@ -1293,72 +1305,23 @@ export default function Home() {
       <div className="ambient-orb ambient-two" />
       <section className="phone-app">
         {tab === "home" && onboardingStep === -1 && (
-          <div className={`screen home-screen mood-${weather}`}>
-            <div className="recovery-scroll">
-              <section className="recovery-greeting">
-                <button type="button" onClick={openTalk}><LinAvatar mood="calm" /></button>
-                <div>
-                  <small>Good morning, {personalization.displayName.trim() || "Cookie"}</small>
-                  <p>{PERSONALIZED_HOME_COPY[personalization.currentState] || "Your island feels a little misty today. Let’s bring back the light with a few gentle steps."}</p>
-                </div>
-              </section>
-
-              <button className="recovery-island" type="button" onClick={() => setTab("island")} aria-label="Open your interactive 3D Heart Island">
-                <Canvas orthographic camera={{ position: [8, 8.5, 8], zoom: 39, near: 0.1, far: 100 }} dpr={[1, 1.45]} gl={{ antialias: true, alpha: true }}>
-                  <BaseIslandPreviewScene
-                    items={baseDecorations}
-                    offsetY={-1.18}
-                    animated
-                    atmosphere
-                    shadowOpacity={0.15}
-                  />
-                </Canvas>
-                <div className="home-island-particles" aria-hidden="true">
-                  {HOME_PARTICLES.map(([x, y, size, duration, delay]) => (
-                    <i
-                      key={`${x}-${y}`}
-                      style={{
-                        "--particle-x": `${x}%`,
-                        "--particle-y": `${y}%`,
-                        "--particle-size": `${size}px`,
-                        "--particle-duration": `${duration}s`,
-                        "--particle-delay": `${delay}s`,
-                      } as React.CSSProperties}
-                    />
-                  ))}
-                </div>
-                <span>Base Island · Tap to decorate</span>
-              </button>
-
-              <section className="recovery-level">
-                <div><strong>☆ Island Lv. {Math.floor(sessions.length / 3) + 1}</strong><span>{sessions.length * 5 + completedGoals.length * 3} / 20 EXP</span></div>
-                <i><b style={{ width: `${Math.min(100, (sessions.length * 5 + completedGoals.length * 3) % 20 * 5)}%` }} /></i>
-                <p>
-                  {personalization.support
-                    ? `Today’s plan focuses on ${personalization.support.toLowerCase()}${personalization.dailyTime ? ` in ${personalization.dailyTime.toLowerCase()}` : ""}.`
-                    : "Complete today’s goals to earn EXP and help your island grow."}
-                </p>
-              </section>
-
-              <div className="daily-heading"><h2>Daily Goals</h2><span>{starterPlan(personalization).filter((goal) => !completedGoals.includes(goal.id)).length} goals left today</span></div>
-              <section className="daily-goals">
-                {starterPlan(personalization).map(({ id, icon, title, minutes, exp, label: recoveryLabel }) => {
-                  const done = completedGoals.includes(id);
-                  return (
-                    <button
-                      key={id}
-                      type="button"
-                      className={done ? "done" : ""}
-                      onClick={() => startRecoveryGoal(id, recoveryLabel)}
-                    >
-                      <i>{icon}</i><span><strong>{title}</strong><small>{minutes} min · {exp} EXP</small></span><em>+{exp}</em><b>{done ? "✓" : ""}</b>
-                    </button>
-                  );
-                })}
-                <button className="add-goal-button" type="button" onClick={() => setGoalSheetOpen(true)}>＋ Add a Goal</button>
-              </section>
-            </div>
-          </div>
+          <HomeDashboard
+            name={personalization.displayName.trim() || "Cookie"}
+            day={Math.max(1, new Set(sessions.map((session) => session.date.split(",")[0])).size)}
+            weather={weather}
+            totalExp={totalHomeExp}
+            goals={homeGoals}
+            completed={completedGoals}
+            onWeather={() => setWeather((current) => nextWeather(current))}
+            onDecorate={() => setTab("island")}
+            onTalk={openTalk}
+            onGoal={startRecoveryGoal}
+            onAddGoal={() => setGoalSheetOpen(true)}
+            scene={<Canvas orthographic camera={{ position: [8, 8.5, 8], zoom: 39, near: 0.1, far: 100 }} dpr={[1, 1.45]} gl={{ antialias: true, alpha: true }}>
+              <BaseIslandPreviewScene items={baseDecorations} offsetY={-1.18} animated atmosphere shadowOpacity={0.15} />
+              <HomeWeatherLighting weather={weather} />
+            </Canvas>}
+          />
         )}
 
         {tab === "talk" && activeRecoveryGoal && (
