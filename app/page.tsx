@@ -184,7 +184,7 @@ const ISLAND_TIMES: Array<{ id: WeatherId; label: string; icon: string }> = [
 const EMPTY_INVENTORY = Object.fromEntries(REWARD_ORDER.map((id) => [id, 0])) as Inventory;
 const SAVE_KEY = "heart-island-chat-v3";
 const ONBOARDING_KEY = "afterglow-onboarding-svg-v1";
-const HOME_TOUR_KEY = "heart-island-home-tour-v1";
+const HOME_TOUR_KEY = "heart-island-home-tour-v2";
 const PERSONALIZATION_KEY = "heart-island-personalization-v1";
 
 const EMPTY_PERSONALIZATION: PersonalizationProfile = {
@@ -1017,9 +1017,12 @@ export default function Home() {
           window.localStorage.removeItem(PERSONALIZATION_KEY);
         }
       }
-      const replayOnboarding = new URLSearchParams(window.location.search).get("onboarding") === "1";
+      const previewParams = new URLSearchParams(window.location.search);
+      const replayOnboarding = previewParams.get("onboarding") === "1";
+      const replayHomeTour = previewParams.get("tour") === "1";
       setOnboardingStep(!replayOnboarding && window.localStorage.getItem(ONBOARDING_KEY) ? -1 : 0);
-      if (!window.localStorage.getItem(HOME_TOUR_KEY) && window.localStorage.getItem(ONBOARDING_KEY)) {
+      if (replayHomeTour || (!window.localStorage.getItem(HOME_TOUR_KEY) && window.localStorage.getItem(ONBOARDING_KEY))) {
+        if (replayHomeTour) setOnboardingStep(-1);
         setHomeTourStep(0);
       }
       const saved = window.localStorage.getItem(SAVE_KEY);
@@ -1343,6 +1346,9 @@ export default function Home() {
             onTalk={openTalk}
             onGoal={startRecoveryGoal}
             onAddGoal={() => { setRecoveryReturnTab("home"); setGoalSheetOpen(true); }}
+            tourStep={homeTourStep}
+            onTourStep={setHomeTourStep}
+            onTourFinish={finishHomeTour}
             scene={<Canvas orthographic camera={{ position: [8, 8.5, 8], zoom: 39, near: 0.1, far: 100 }} dpr={[1, 1.45]} gl={{ antialias: true, alpha: true }}>
               <BaseIslandPreviewScene items={baseDecorations} offsetY={-1.18} animated atmosphere shadowOpacity={0.15} />
               <HomeWeatherLighting weather={weather} />
@@ -1434,34 +1440,6 @@ export default function Home() {
                 Replay Onboarding
               </button>
             </div>
-          </div>
-        )}
-
-        {tab === "home" && onboardingStep === -1 && homeTourStep >= 0 && (
-          <div className={`home-tour-overlay tour-${homeTourStep}`}>
-            <div className="home-tour-lin"><LinAvatar mood={homeTourStep === 2 ? "wave" : "happy"} /></div>
-            <section>
-              <strong>
-                {homeTourStep === 0
-                  ? "Welcome to your recovery space"
-                  : homeTourStep === 1
-                    ? "This card tracks your island’s growth"
-                    : "These are today’s gentle goals"}
-              </strong>
-              <p>
-                {homeTourStep === 0
-                  ? "Your island changes gently with your feelings, activities, and recovery."
-                  : homeTourStep === 1
-                    ? "Each recovery session earns EXP and helps your island keep growing."
-                    : "Complete goals to bring home light and decorations, or add a recovery goal of your own."}
-              </p>
-              <div>
-                <button type="button" onClick={finishHomeTour}>Skip</button>
-                <button type="button" onClick={() => homeTourStep === 2 ? finishHomeTour() : setHomeTourStep((current) => current + 1)}>
-                  {homeTourStep === 2 ? "Got It" : "Next"}
-                </button>
-              </div>
-            </section>
           </div>
         )}
 

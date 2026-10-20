@@ -34,6 +34,7 @@
 .dailyHeading h2 { margin: 0; font-size: calc(16 * var(--u)); font-weight: 600; }
 .dailyHeading span { font-size: calc(12 * var(--u)); }
 .goals { display: grid; gap: calc(9 * var(--u)); }
+.goalList { display: grid; gap: calc(9 * var(--u)); }
 .goal { display: flex; align-items: center; width: 100%; gap: calc(12 * var(--u)); min-height: calc(68 * var(--u)); padding: calc(11 * var(--u)) calc(16 * var(--u)); text-align: left; background: #fff; border: 1px solid #bbcab2; border-radius: calc(17 * var(--u)); color: #383c38; }
 .goalIcon { flex: none; display: grid; place-items: center; width: calc(40 * var(--u)); height: calc(40 * var(--u)); border-radius: calc(10 * var(--u)); background: #f4f5f7; color: #77b8cd; }
 .goalIcon svg { width: calc(22 * var(--u)); height: calc(22 * var(--u)); }

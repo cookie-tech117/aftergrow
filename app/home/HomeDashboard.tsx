@@ -1,9 +1,10 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from 'react';
+import { useRef, type CSSProperties, type ReactNode } from 'react';
 import type { StarterGoal } from '../onboarding/flow';
 import { HOME_WEATHER, nextWeather, type IslandWeather } from './weather';
 import styles from './home.module.css';
+import HomeTour from './HomeTour';
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
@@ -38,15 +39,19 @@ type Props = {
   onTalk: () => void;
   onGoal: (id: string, label: string) => void;
   onAddGoal: () => void;
+  tourStep?: number;
+  onTourStep?: (step: number) => void;
+  onTourFinish?: () => void;
 };
 
-export default function HomeDashboard({ name, day, weather, totalExp, goals, completed, scene, onWeather, onDecorate, onTalk, onGoal, onAddGoal }: Props) {
+export default function HomeDashboard({ name, day, weather, totalExp, goals, completed, scene, onWeather, onDecorate, onTalk, onGoal, onAddGoal, tourStep = -1, onTourStep, onTourFinish }: Props) {
+  const rootRef = useRef<HTMLDivElement>(null), scrollRef = useRef<HTMLDivElement>(null);
   const weatherSettings = HOME_WEATHER[weather];
   const remaining = goals.filter((goal) => !completed.includes(goal.id)).length;
   const currentExp = totalExp % 20;
   const level = Math.floor(totalExp / 20) + 1;
-  return <div className={`screen ${styles.root}`} data-weather={weather} style={{ background: weatherSettings.background, '--weather-particle': weatherSettings.particle } as CSSProperties}>
-    <div className={styles.scroll}>
+  return <div ref={rootRef} className={`screen ${styles.root}`} data-weather={weather} style={{ background: weatherSettings.background, '--weather-particle': weatherSettings.particle } as CSSProperties}>
+    <div ref={scrollRef} className={styles.scroll}>
       <header className={styles.greeting}>
         <button className={styles.avatar} type="button" aria-label="Talk with Lin" onClick={onTalk}><img src={`${BASE_PATH}/assets/home/lin-avatar.webp`} alt="Lin" /></button>
         <div className={styles.greetingCard}><h1>Good morning, {name}</h1><p>Day {day} of Recovery. {weatherSettings.message}</p></div>
@@ -54,7 +59,7 @@ export default function HomeDashboard({ name, day, weather, totalExp, goals, com
 
       <section className={styles.islandArea} aria-label="Your living island">
         <button className={styles.weatherButton} type="button" onClick={onWeather} aria-label={`Weather: ${weatherSettings.label}. Switch to ${HOME_WEATHER[nextWeather(weather)].label}`} title={`Switch weather to ${HOME_WEATHER[nextWeather(weather)].label}`}><HomeIcon name={weather === 'sunny' ? 'sun' : weather} /><span aria-live="polite">{weatherSettings.label}</span><span className={styles.cycle} aria-hidden="true">↻</span></button>
-        <button className={styles.island} type="button" onClick={onDecorate} aria-label="Open your interactive 3D Heart Island">
+        <button data-home-tour="island" className={styles.island} type="button" onClick={onDecorate} aria-label="Open your interactive 3D Heart Island">
           {scene}
           <div className={styles.motes} aria-hidden="true">{Array.from({ length: 16 }, (_, i) => <i key={i} style={{ '--i': i } as CSSProperties} />)}</div>
           {(weather === 'rain' || weather === 'snow') && <div className={`${styles.precipitation} ${weather === 'rain' ? styles.rain : styles.snow}`} aria-hidden="true">{Array.from({ length: 30 }, (_, i) => <i key={i} style={{ '--i': i } as CSSProperties} />)}</div>}
@@ -71,7 +76,15 @@ export default function HomeDashboard({ name, day, weather, totalExp, goals, com
 
       <div className={styles.dailyHeading}><h2>Daily Goals</h2><span aria-live="polite">{remaining ? `${remaining} ${remaining === 1 ? 'goal' : 'goals'} left for today!` : 'A little brighter today ✓'}</span></div>
       <section className={styles.goals} aria-label="Daily recovery goals">
-        {goals.map((goal) => {
+        <div data-home-tour="goals" className={styles.goalList}>{goals.slice(0, 3).map((goal) => {
+          const done = completed.includes(goal.id);
+          return <button className={`${styles.goal} ${done ? styles.done : ''}`} type="button" key={goal.id} onClick={() => onGoal(goal.id, goal.label)} aria-label={`${goal.title}, ${goal.minutes} minutes, ${done ? 'completed' : `${goal.exp} EXP`}`}>
+            <span className={styles.goalIcon} data-kind={goal.id}><HomeIcon name={goal.id} /></span>
+            <span className={styles.goalText}><strong>{goal.title}</strong><small>{goal.minutes} min · {goal.exp} EXP</small></span>
+            <span className={styles.exp}>+{goal.exp}</span><span className={styles.check} aria-hidden="true">{done ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="m5 12 4 4 10-9" /></svg> : null}</span>
+          </button>;
+        })}</div>
+        {goals.slice(3).map((goal) => {
           const done = completed.includes(goal.id);
           return <button className={`${styles.goal} ${done ? styles.done : ''}`} type="button" key={goal.id} onClick={() => onGoal(goal.id, goal.label)} aria-label={`${goal.title}, ${goal.minutes} minutes, ${done ? 'completed' : `${goal.exp} EXP`}`}>
             <span className={styles.goalIcon} data-kind={goal.id}><HomeIcon name={goal.id} /></span>
@@ -79,8 +92,9 @@ export default function HomeDashboard({ name, day, weather, totalExp, goals, com
             <span className={styles.exp}>+{goal.exp}</span><span className={styles.check} aria-hidden="true">{done ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="m5 12 4 4 10-9" /></svg> : null}</span>
           </button>;
         })}
-        <button className={styles.addGoal} type="button" onClick={onAddGoal}><span aria-hidden="true">＋</span> Add a Goal</button>
+        <button data-home-tour="add" className={styles.addGoal} type="button" onClick={onAddGoal}><span aria-hidden="true">＋</span> Add a Goal</button>
       </section>
     </div>
+    {tourStep >= 0 && onTourStep && onTourFinish && <HomeTour step={tourStep} day={day} root={rootRef} scroll={scrollRef} onStep={onTourStep} onFinish={() => { scrollRef.current?.scrollTo({ top: 0, behavior: 'instant' }); onTourFinish(); }} />}
   </div>;
 }
